@@ -1,0 +1,16 @@
+.*
+!.gitignore
+*.class
+*.war
+*.iml
+bin/
+classes/
+target/
+target/*
+build/*
+build/
+/build
+!.bowerrc
+node_modules/*
+node_modules
+bower_components

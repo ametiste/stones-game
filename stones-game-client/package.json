@@ -1,0 +1,13 @@
+{
+  "engines": {
+    "node": "0.12.x"
+  },
+  "name": "stones-ui",
+  "private": true,
+  "version": "0.1.2",
+  "description": "",
+  "main": "",
+  "dependencies": {
+    "bower": "^1.4.0"
+  }
+}

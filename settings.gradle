@@ -1,0 +1,4 @@
+rootProject.name = 'stones-game'
+include 'stones-game-server'
+include 'stones-game-client'
+

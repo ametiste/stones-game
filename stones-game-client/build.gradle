@@ -1,0 +1,72 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.9'
+    }
+}
+
+plugins {
+    id "com.moowork.node" version "0.10"
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+node {
+    version = '0.12.2'
+    npmVersion = '2.7.5'
+    download = true
+}
+
+task npmCacheConfig(type: NpmTask) {
+    description = "Configure the NPM cache"
+    def npmCacheDir = "${gradle.getGradleUserHomeDir()}/caches/npm"
+    outputs.files file(npmCacheDir)
+    args = [ 'config', 'set', 'cache', npmCacheDir ]
+}
+
+task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
+    description = "Install Node.js packages"
+    args = [ 'install' ]
+    inputs.files file('package.json')
+    outputs.files file('node_modules')
+}
+
+task bowerInstall(type: NodeTask) {
+    script = file('node_modules/bower/bin/bower')
+    args = ['install']
+    inputs.files file('bower.json')
+    outputs.files file('bower_components')
+    dependsOn npmPackages
+}
+
+task bowerSyncJavascript(type: Sync) {
+    from 'bower_components'
+    into "build/resources/main/lib"
+
+    dependsOn bowerInstall
+}
+
+task bowerSyncStylesheets(type: Sync) {
+    from 'bower_components'
+    into "build/resources/main/lib"
+
+    dependsOn bowerInstall
+}
+
+task bowerPackages() {
+    dependsOn bowerSyncJavascript, bowerSyncStylesheets
+}
+
+processResources.dependsOn bowerPackages
+build.dependsOn bowerPackages
+
+clean.delete << file('build/resources/main/lib')
+clean.delete << file('node_modules')
+clean.delete << file('bower_components')
+
